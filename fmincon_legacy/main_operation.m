@@ -1,17 +1,33 @@
-function [mean_times, min_times, max_times, discrepancies] = main_operation(n, m1, m2, methods, Z1_cycles, Z2_smaller, Z2_equal)
+% This script contains the main operation to check the different
+% implementations, that is to say that it measures the time needed be every
+% algorithm for each zonotope-pair that is to be tested.
+
+function full_data = main_operation(n, m1, m2, methods, Z1_cycles, Z2_smaller, Z2_equal)
 
     n_methods = size(methods, 2);
-    max_times = zeros(size(methods));
-    min_times = zeros(size(methods)) + inf;
-    total_times = zeros(size(methods));
-    discrepancies = 0;
     
+    times_smaller = {};
+    times_equal = {};
+    discrepancies_smaller = {};
+    discrepancies_equal = {};
+    
+    % Pre-allocating the space needed for the results
+    for i = 1:n_methods
+        times_smaller{i} = zeros([Z1_cycles Z2_smaller]); % So Z1 dictates the rows, Z2 the columns
+        times_equal{i} = zeros([Z1_cycles Z2_smaller]);
+        
+        discrepancies_smaller{i} = zeros([Z1_cycles Z2_smaller]);
+        discrepancies_equal{i} = zeros([Z1_cycles Z2_smaller]);
+    end
+        
     for z1 = 1:Z1_cycles
         
         G1 = rand([n m1]) - 0.5;
         g1 = max(sum(abs(G1), 2));
         G1 = G1 ./ g1;
         
+        % Ideally, Z1 should be non-degenerate; if it is not, we just keep
+        % searching for a Z1 that is.
         while rank(G1) ~= n
             G1 = rand([n m1]) - 0.5;
             g1 = max(sum(abs(G1), 2));
@@ -29,18 +45,16 @@ function [mean_times, min_times, max_times, discrepancies] = main_operation(n, m
             
             c2 = 2*(rand([n 1]) - 0.5);
             
+           
+            
             [times, results] = compute_methods(c1, G1, c2, G2, methods);
             
             standard = results(1);
-            discrepancy_found = false;
             
             for i = 1:n_methods
-                max_times(i) = max(max_times(i), times(i));
-                min_times(i) = min(min_times(i), times(i));
-                total_times(i) = total_times(i) + times(i);
-                if standard ~= results(i) && not(discrepancy_found)
-                    discrepancy_found = true;
-                    discrepancies = discrepancies + 1;
+                times_smaller{i}(z1,z2) = times(i);
+                if standard ~= results(i)
+                    discrepancies_smaller{i}(z1,z2) = 1;
                 end
             end
         end
@@ -58,22 +72,17 @@ function [mean_times, min_times, max_times, discrepancies] = main_operation(n, m
             [times, results] = compute_methods(c1, G1, c2, G2, methods);
             
             standard = results(1);
-            discrepancy_found = false;
             
             for i = 1:n_methods
-                max_times(i) = max(max_times(i), times(i));
-                min_times(i) = min(min_times(i), times(i));
-                total_times(i) = total_times(i) + times(i);
-                if standard ~= results(i) && not(discrepancy_found)
-                    discrepancy_found = true;
-                    discrepancies = discrepancies + 1;
+                times_equal{i}(z1,z2) = times(i);
+                if standard ~= results(i)
+                    discrepancies_equal{i}(z1,z2) = 1;
                 end
             end
-            
         end
     end
     
-    mean_times = total_times./(Z1_cycles * (Z2_smaller + Z2_equal));
+    full_data = {times_smaller, discrepancies_smaller, times_equal, discrepancies_equal};
 
 end
 

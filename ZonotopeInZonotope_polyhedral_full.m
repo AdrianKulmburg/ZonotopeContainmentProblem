@@ -1,4 +1,4 @@
-function isIn = ZonotopeInZonotope_polyhedral(c1, G1, c2, G2)
+function maximum = ZonotopeInZonotope_polyhedral_full(c1, G1, c2, G2)
     % Polyhedral approach
     % @@@ Change what follows ASAP! @@@
     tol = 1e-12;
@@ -15,13 +15,9 @@ function isIn = ZonotopeInZonotope_polyhedral(c1, G1, c2, G2)
     
     Lambda = Lambda ./ d;
     
-    maximum = MVS_polyhedral(Lambda, [G2 c2-c1]);
+    maximum = MVS_polyhedral_full(Lambda, [G2 c2-c1]);
     
-    if maximum > 1- tol
-        isIn = false;
-    else
-        isIn = true;
-    end
+    
     
     
 end

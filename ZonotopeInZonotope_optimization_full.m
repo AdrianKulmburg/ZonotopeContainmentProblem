@@ -1,4 +1,4 @@
-function isIn = ZonotopeInZonotope_optimization(c1, G1, c2, G2)
+function res = ZonotopeInZonotope_optimization_full(c1, G1, c2, G2)
     % Optimization approach
     tol = 1e-12;
     
@@ -21,15 +21,11 @@ function isIn = ZonotopeInZonotope_optimization(c1, G1, c2, G2)
     
 %     [x, fval] = fmincon(f, x0, [], [], [], [], -ones([m2 1]), ones([m2 1]), [], options);
 %    
-    options = optimoptions('surrogateopt', 'Display', 'none', 'PlotFcn', [], 'ObjectiveLimit', -1-tol, 'MaxFunctionEvaluations', 500);
+    options = optimoptions('surrogateopt', 'Display', 'none', 'PlotFcn', [], 'MaxFunctionEvaluations', 500);
     
     [x, fval] = surrogateopt(f, -ones([m2 1])', ones([m2 1])', ones([m2 1])', options);
-    m = -fval;
-    if m > 1 + tol
-        isIn = false;
-    else
-        isIn = true;
-    end
+    res = -fval;
+    
     
 end
 

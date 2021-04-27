@@ -18,7 +18,7 @@ Z2_smaller = 10;
 Z2_equal = 10;
 
 % Parameters setting the dimensionality of the zonotopes
-n_range = 2:20;
+n_range = 5:130;
 m1_range = n_range.*2;
 m2_range = n_range.*2;
 

@@ -1,4 +1,4 @@
-function isIn = ZonotopeInZonotope_vertexEnumeration(c1, G1, c2, G2)
+function res = ZonotopeInZonotope_vertexEnumeration_full(c1, G1, c2, G2)
     % Vertex enumeration
     tol = 1e-12;
 
@@ -8,11 +8,6 @@ function isIn = ZonotopeInZonotope_vertexEnumeration(c1, G1, c2, G2)
     
     res = max_SV(V, norm_Z1);
     
-    if res > 1- tol
-        isIn = false;
-    else
-        isIn = true;
-    end
     
     
     
@@ -32,9 +27,6 @@ function res = max_SV(V, norm)
         if r > res
             res = r;
             mu = m;
-        end
-        if r > 1 - tol
-            return
         end
     end
 end

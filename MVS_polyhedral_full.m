@@ -17,9 +17,6 @@ function current_maximum = MVS_polyhedral(Lambda, V)
         maximum = c(S_V(V, mu));
         if maximum > current_maximum
             current_maximum = maximum;
-            if maximum > 1 - tol % If we already find a point that has polyhedral norm larger than 1, we know that the zonotope is not contained
-                return
-            end
         end
     end
 end

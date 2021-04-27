@@ -61,7 +61,7 @@ for i_m2 = 1:size_m2_range
     opt_point_data{i_m2}{3} = opt_max;
     opt_point_data{i_m2}{4} = opt_points_x;
     opt_point_data{i_m2}{5} = opt_points_y;
-    total_discrepancies = total_discrepancies + sum(sum(full_data{2}{2})) + sum(sum(full_data{4}{2}));
+    total_discrepancies = total_discrepancies + sum(sum(full_data{2}{1})) + sum(sum(full_data{4}{1}));
     
     ver_times_smaller = full_data{1}{2};
     ver_times_equal = full_data{3}{2};
