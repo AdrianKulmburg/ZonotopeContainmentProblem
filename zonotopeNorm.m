@@ -44,7 +44,6 @@ function Znorm = zonotopeNorm(Z, p)
 %------------- BEGIN CODE --------------
 
 % Retrieve generator-representation of Z
-c = Z.center;
 G = Z.generators;
 
 % Retrieve dimensions of the generator matrix of Z
@@ -56,7 +55,7 @@ m = size(G, 2);
 f = [1;zeros([m 1])];
 
 Aeq = [zeros([n 1]) G];
-beq = p - c;
+beq = p;
 
 Aineq1 = [-ones([m 1]) eye(m)];
 Aineq2 = [-ones([m 1]) -eye(m)];

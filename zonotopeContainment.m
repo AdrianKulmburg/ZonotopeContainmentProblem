@@ -3,9 +3,9 @@ function isIn = zonotopeContainment(Z2, Z1, varargin)
 %   zonotope Z2 (careful about the order!)
 %
 % Syntax:  
-%    isIn = containsPoint(Z1,Z2)
-%    isIn = containsPoint(Z1,Z2,method,tol)
-%    isIn = containsPoint(Z1,Z2,method,tol,steps)
+%    isIn = zonotopeContainment(Z1,Z2)
+%    isIn = zonotopeContainment(Z1,Z2,method,tol)
+%    isIn = zonotopeContainment(Z1,Z2,method,tol,steps)
 %
 % Inputs:
 %    Z1, Z2 - zonotope objects
@@ -28,7 +28,7 @@ function isIn = zonotopeContainment(Z2, Z1, varargin)
 %               this is guaranteed to be the case. The runtime is
 %               polynomial w.r.t. maxEval and the other inputs.
 %           - 'approx' or 'st': Solves the containment problem using the
-%               approximative method from [1]. If a solution using 'opt'
+%               approximative method from [1]. If a solution using 'st'
 %               returns that Z1 is contained in Z2, then this is guaranteed
 %               to be the case. The runtime is polynomial w.r.t. all
 %               inputs.
@@ -185,7 +185,7 @@ combinations = dec2bin(0:2^m-1)-'0';
 combinations = 2*(combinations - 0.5);
 
 for iter = combinations'
-    if norm_Z2_nu(iter) > 1 - tol
+    if norm_Z2_nu(iter) > 1 + tol
         % If one vertex has norm larger than 1, it lies outside Z2, and
         % thus Z1 is not in Z2
         isIn = false;
@@ -226,7 +226,7 @@ n = size(M, 1);
 for i = 1:n
     mu = M(i,:); % Sign-combination
     maximum = poly_norm(V*mu'); % Compute the resulting polyhedral norm
-    if maximum > 1-tol % If we found a point with polyhedral norm larger
+    if maximum > 1+tol % If we found a point with polyhedral norm larger
                        % than 1, we can stop the algorithm.
         isIn = false;
         return
@@ -256,7 +256,7 @@ norm_Z2_nu = @(nu) -zonotopeNorm(Z2, G*nu' + Z1.center-Z2.center);
 options = optimoptions('surrogateopt',...
     'Display', 'none',... % Suppress output
     'PlotFcn', [],... % Supress plot output
-    'ObjectiveLimit', -1+tol,... % Stop when a maximum > 1+tol has been
+    'ObjectiveLimit', -1-tol,... % Stop when a maximum > 1+tol has been
                              ... % found (i.e., a point of Z1 outside
                              ... % of Z2 has been found)
     'MaxFunctionEvaluations', maxEval); % Set maximum number of
@@ -268,7 +268,7 @@ options = optimoptions('surrogateopt',...
 % the values +-1, i.e., integer values.
 [~, fval] = surrogateopt(norm_Z2_nu, -ones([m 1])', ones([m 1])', ones([m 1])', options);
 
-if -fval > 1 - tol
+if -fval > 1 + tol
     isIn = false;
 else
     isIn = true;
@@ -296,7 +296,7 @@ beda = sdpvar(ny, 1);
 constraints = [...
     X == Y*Gamma, ...
     y - x == Y*beda, ...
-    norm([Gamma, beda], Inf) <= 1-tol];
+    norm([Gamma, beda], Inf) <= 1+tol];
 cost = []; % It suffices to check feasibility here, so no cost function
 options = sdpsettings('solver','linprog', 'verbose',0, 'allownonconvex',0); 
 
